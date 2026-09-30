@@ -1,6 +1,6 @@
 # Real-Time Face Recognition System
 
-A real-time face recognition system built with **Python, OpenCV, Haar Cascade Classifiers, and NumPy**. The application uses a webcam to detect faces, collect face data, and recognize registered individuals in real time.
+A real-time face recognition system built with **Python, OpenCV, KNN, Haar Cascade Classifiers, and NumPy**. The application uses a webcam to detect faces, collect face data, and recognize registered individuals in real time.
 
 ## Features
 
