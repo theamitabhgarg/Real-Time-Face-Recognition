@@ -1,36 +1,55 @@
 import cv2
-import numpy as np 
+import numpy as np
 
 cap = cv2.VideoCapture(0)
+
 face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
 
 while True:
-	ret,frame = cap.read()
+    ret, frame = cap.read()
 
-	gray_frame = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+    if not ret:
+        print("Failed to read frame from camera")
+        break
 
-	if ret == False:
-		continue
+    gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-	faces = face_cascade.detectMultiScale(gray_frame,1.3,5)
-	if len(faces) == 0:
-		continue
+    faces = face_cascade.detectMultiScale(
+        gray_frame,
+        scaleFactor=1.3,
+        minNeighbors=5
+    )
 
-	for face in faces[:1]:
-		x,y,w,h = face
+    for face in faces:
+        x, y, w, h = face
 
-		offset = 10
-		face_offset = frame[y-offset:y+h+offset,x-offset:x+w+offset]
-		face_selection = cv2.resize(face_offset,(100,100))
+        offset = 10
 
-		cv2.imshow("Face", face_selection)
-		cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
+        x1 = max(0, x - offset)
+        y1 = max(0, y - offset)
+        x2 = min(frame.shape[1], x + w + offset)
+        y2 = min(frame.shape[0], y + h + offset)
 
-	cv2.imshow("faces",frame)
+        face_offset = frame[y1:y2, x1:x2]
 
-	key_pressed = cv2.waitKey(1) & 0xFF
-	if key_pressed == ord('q'):
-		break
+        if face_offset.size > 0:
+            face_selection = cv2.resize(face_offset, (100, 100))
+            cv2.imshow("Face", face_selection)
+
+        cv2.rectangle(
+            frame,
+            (x, y),
+            (x + w, y + h),
+            (0, 255, 0),
+            2
+        )
+
+    cv2.imshow("faces", frame)
+
+    key_pressed = cv2.waitKey(1) & 0xFF
+
+    if key_pressed == ord("q"):
+        break
 
 cap.release()
 cv2.destroyAllWindows()
